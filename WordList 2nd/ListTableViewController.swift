@@ -9,6 +9,9 @@
 import UIKit
 
 class ListTableViewController: UITableViewController {
+    
+    var wordArray: [AnyObject] = []
+    let saveData = NSUserDefaults.standardUserDefaults()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,8 +21,17 @@ class ListTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        tableView.registerNib(UINib(nibName: "ListTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
     }
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        if saveData.arrayForKey("WORD") != nil {
+            wordArray = saveData.arrayForKey("WORD")!
+        }
+        tableView.reloadData()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -29,23 +41,30 @@ class ListTableViewController: UITableViewController {
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return wordArray.count
     }
 
-    /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! ListTableViewCell
 
         // Configure the cell...
+        
+        let nowIndexPathDictionary: (AnyObject) = wordArray[indexPath.row]
+        
+        cell.englishLabel.text = nowIndexPathDictionary["english"] as? String
+        cell.japaneseLabel.text = nowIndexPathDictionary["japanese"] as? String
 
         return cell
     }
-    */
+    
+    @IBAction func backButton() {
+        self.performSegueWithIdentifier("toView", sender: nil)
+    }
 
     /*
     // Override to support conditional editing of the table view.
